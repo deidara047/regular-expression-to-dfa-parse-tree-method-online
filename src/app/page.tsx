@@ -9,8 +9,19 @@ import { TransitionsTableData } from "./api/_classes/TransitionsTableData";
 import TransitionsTable from "./_components/TransitionsTable";
 import { LinkedList } from "./api/_structs/LinkedList";
 import { ResStruct } from "./typestouse";
+import 'katex/dist/katex.min.css';
+import Latex from 'react-latex-next';
+import SSRProvider from 'react-bootstrap/SSRProvider';
+import Spinner from 'react-bootstrap/Spinner';
+import Link from "next/link";
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+config.autoAddCss = false;
 
 export default function Home() {
+  const [isLoading, setisLoading] = useState(false);
   const [inputValue, setInputValue] = useState('ab?c(a|b)+');
   const [dotSyntacticTree, setdotSyntacticTree] = useState("");
   const [followPosTableContent, setFollowPosTableContent] = useState<DataFollowListTuple[] | null>(null);
@@ -21,6 +32,7 @@ export default function Home() {
   } | null>(null);
 
   async function analyzeRegExp() {
+    setisLoading(true);
     const response = await fetch('http://localhost:3000/api',
       {
         method: "POST",
@@ -31,6 +43,8 @@ export default function Home() {
       });
 
     const result: ResStruct = await response.json();
+
+    setisLoading(false);
 
     setdotSyntacticTree(result.svgSyntacticTree);
     setFollowPosTableContent(result.followPosTableContent.map((elem) => {
@@ -56,39 +70,108 @@ export default function Home() {
   };
 
   return (
-    <main className={styles.all + " container"}>
-      <h1>Regular Expresion to DFA</h1>
-      <h2>Parse tree method</h2>
+    <main className={styles.all}>
+      <div className="container my-4 border border-secondary" style={{ padding: "1.8rem 0 1.8rem" }}>
+        <h1 style={{ textShadow: "2px 2px #aaa" }}><b>Regular Expresion to DFA</b></h1>
+        <h3>Parse tree method</h3>
+        <Link target="_blank" className="text-decoration-none" href="https://www.geeksforgeeks.org/regular-expression-to-dfa/"><FontAwesomeIcon icon={faGithub} /> by Deidr047</Link>
+        <div className="card mt-3" style={{backgroundColor: "#eee"}}>
+          <div className="card-body">
+            <div>
+              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Write epsilon</h6>
+              <p className="card-text">To write epsilon, you can type <b>''</b>, <Latex>{`$\\epsilon$`}</Latex> or <Latex>{`$\\varepsilon$`}</Latex>.</p>
+            </div>
+            <div className="my-4">
+              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Valid characters</h6>
+              <ul className="">
+                <li className="">All letters of the english alphabet, whether uppercase or lowercase. i.e. <b>a</b>,<b>B</b>,<b>Z</b>,<b>e</b></li>
+                <li className="">Integer numbers. i.e. <b>1</b>,<b>2</b>,<b>3</b></li>
+                <li className="">
+                  These others: <b>!</b>,
+                  <b> %</b>,
+                  <b> &</b>,
+                  <b> /</b>,
+                  <b> =</b>,
+                  <b> ?</b>,
+                  <b> ¿</b>,
+                  <b> ¡</b>,
+                  <b> -</b>,
+                  <b> _</b>,
+                  <b> .</b>,
+                  <b> ,</b>,
+                  <b> _</b>,
+                  <b> ;</b>
+                </li>
+              </ul>
+              <p>Of course, if you cannot use a certain character, you can always replace it with a valid one.</p>
+            </div>
+            <div>
+              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>How this works? And the rules of the method:</h6>
+              <p className="mb-1">
+                If you have questions about the rules of this method, please visit this GeeksForGeeks webpage (GeeksForGeeks you are the best :D):
+              </p>
+              <Link target="_blank" href="https://www.geeksforgeeks.org/regular-expression-to-dfa/">https://www.geeksforgeeks.org/regular-expression-to-dfa/</Link>
+            </div>
+          </div>
+        </div>
 
-      <div>
-        <label className="col-form-label mt-4" htmlFor="inputDefault">Enter the Regular Expresion</label>
-        <input value={inputValue}
-          onChange={handleChange}
-          type="text"
-          className="form-control"
-          placeholder="Default input"
-          id="inputDefault" />
-        <button onClick={() => analyzeRegExp()} className='btn btn-light'>Generate DFA</button>
-      </div>
+        <hr />
+        <div>
+          <label className="col-form-label" htmlFor="input-text">Enter the Regular Expresion</label>
+          <input value={inputValue}
+            onChange={handleChange}
+            type="text"
+            className={styles.input_text + " form-control"}
+            placeholder="Default input"
+            id="input-text" />
+        </div>
+        <fieldset className="mt-3 mb-2">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" value="" id="flexCheck1" />
+            <label className="form-check-label" htmlFor="flexCheck1">
+              Use <Latex>{`$a?$`}</Latex> as <Latex>{`$\\relax(a|\\varepsilon)$`}</Latex>
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" value="" id="flexCheck2" />
+            <label className="form-check-label" htmlFor="flexCheck2">
+              Use <Latex>{`$a+$`}</Latex> as <Latex>{`$aa*$`}</Latex>
+            </label>
+          </div>
+        </fieldset>
+        <button onClick={() => analyzeRegExp()} disabled={isLoading} className='btn btn-primary mt-2'>Generate DFA</button>
 
-      <div dangerouslySetInnerHTML={{ __html: dotSyntacticTree }} style={{ width: 750, border: "1px solid black" }}>
-      </div>
+        <SSRProvider>
+          {isLoading ? <div className="d-flex justify-content-center">
+            <Spinner animation="border" variant="primary" />
+          </div> : ""}
+        </SSRProvider>
 
-      <div>
-        {followPosTableContent != null ? <FollowPosTable followPosTable={followPosTableContent} /> : ""}
-      </div>
+        {dotDFA.length > 0 ? <div>
+          <hr />
+          <p className="text-muted">Result:</p>
+        </div> : ""}
+        <div className={dotDFA.length > 0 ? "mt-3" : ""}>
+          {dotDFA.length > 0 ? <div>
+            <h2>Parse Tree Graph</h2>
+          </div> : ""}
 
-      <div className='mt-2'>
-        {transitionsTableProps != null ? <TransitionsTable 
-                                            transitionsTable={transitionsTableProps.transitionsTable} 
-                                            alphabetList={transitionsTableProps.alphabetList} 
-                                          /> : ""}
-      </div>
+          <div className="overflow-hidden" dangerouslySetInnerHTML={{ __html: dotSyntacticTree }}>
+          </div>
 
-      <div>
-        <h2>DFA Graph</h2>
-      </div>
-      <div dangerouslySetInnerHTML={{ __html: dotDFA }} style={{ width: 750, border: "1px solid black" }}>
+          {followPosTableContent != null ? <div className="mt-5"><FollowPosTable followPosTable={followPosTableContent} /></div> : ""}
+
+          {transitionsTableProps != null ? <div className='mt-5'><TransitionsTable
+            transitionsTable={transitionsTableProps.transitionsTable}
+            alphabetList={transitionsTableProps.alphabetList}
+          />  </div> : ""}
+
+          {dotDFA.length > 0 ? <div className="mt-5">
+            <h2>DFA Graph</h2>
+            <div className="overflow-hidden" dangerouslySetInnerHTML={{ __html: dotDFA }}>
+            </div>
+          </div> : ""}
+        </div>
       </div>
     </main>
   );

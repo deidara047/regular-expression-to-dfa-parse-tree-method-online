@@ -8,7 +8,7 @@ const FollowPosTable: React.FC<Props> = ({ followPosTable }) => {
   return (
     <div>
       <h2>Follow Pos Table</h2>
-      <table className="table table-striped">
+      <table className="table table-striped w-auto table-bordered" style={{ tableLayout: "auto" }}>
         <thead>
           <tr>
             <th scope="col">Leaf</th>

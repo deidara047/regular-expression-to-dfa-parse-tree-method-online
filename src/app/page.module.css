@@ -4,3 +4,7 @@
 .all {
   font-family: 'Wittgenstein';
 }
+
+.input_text {
+  max-width: 350px;
+}

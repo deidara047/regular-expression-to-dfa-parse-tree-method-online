@@ -9,7 +9,7 @@ const TransitionsTable: React.FC<Props> = ({ transitionsTable, alphabetList }) =
   return (
     <div>
       <h2>Transitions Table</h2>
-      <table className="table table-striped">
+      <table className="table table-striped w-auto table-bordered" style={{ tableLayout: "auto" }}>
         <thead>
           <tr>
             <th scope="col">States</th>
