@@ -1,8 +1,7 @@
 "use client"
 
-import Image from "next/image";
 import styles from "./page.module.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { DataFollowListTuple } from "./api/_classes/DataFollowListTuple";
 import FollowPosTable from "./_components/FollowPosTable";
 import { TransitionsTableData } from "./api/_classes/TransitionsTableData";
@@ -11,19 +10,37 @@ import { LinkedList } from "./api/_structs/LinkedList";
 import { ResStruct } from "./typestouse";
 import 'katex/dist/katex.min.css';
 import Latex from 'react-latex-next';
-import SSRProvider from 'react-bootstrap/SSRProvider';
 import Spinner from 'react-bootstrap/Spinner';
 import Link from "next/link";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { TsCalcParser } from "./api/_analyzer/ts-analyzer2";
 config.autoAddCss = false;
+
+interface FormData {
+  inputValue: string;
+  checkbox1: boolean;
+  checkbox2: boolean;
+}
+
+interface ErrorStruct {
+  type: string;
+  message: string;
+  line: string;
+}
 
 export default function Home() {
   const [isLoading, setisLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('ab?c(a|b)+');
-  const [inputValue2, setInputValue2] = useState('');
+  const [error, seterror] = useState<ErrorStruct>({ type: "", message: "", line: "" });
+  const [finalRegExp, setfinalRegExp] = useState("");
+  const [formData, setFormData] = useState<FormData>({
+    inputValue: '',
+    checkbox1: false,
+    checkbox2: false,
+  });
+
   const [dotSyntacticTree, setdotSyntacticTree] = useState("");
   const [followPosTableContent, setFollowPosTableContent] = useState<DataFollowListTuple[] | null>(null);
   const [dotDFA, setdotDFA] = useState("");
@@ -32,43 +49,82 @@ export default function Home() {
     alphabetList: string[];
   } | null>(null);
 
-  async function analyzeRegExp() {
-    setisLoading(true);
-    const response = await fetch('http://localhost:3000/api',
-      {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ input: inputValue })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: (type === 'checkbox' ? checked : value),
+    }));
+
+    if (error.message.length > 0) {
+      seterror(prevData => ({
+        ...prevData,
+        message: "",
+        line: ""
+      }))
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let result1 = null;
+    let localErrors: any[] = []
+
+    try {
+      let prsInstance = new TsCalcParser();
+      result1 = prsInstance.parse(formData.inputValue, {
+        errors: localErrors,
+        checkbox1: formData.checkbox1,
+        checkbox2: formData.checkbox2
+      });
+    } catch (e: any) {
+      console.error(e);
+    }
+
+    if (localErrors.length > 0) {
+      seterror({ type: localErrors[0].type, message: localErrors[0].message, line: localErrors[0].location.first_column })
+    } else {
+      setisLoading(true);
+      setfinalRegExp(result1);
+      const response = await fetch('http://localhost:3000/api',
+        {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ input: result1 })
+        });
+
+      const result: ResStruct = await response.json();
+
+      setisLoading(false);
+
+      setdotSyntacticTree(result.svgSyntacticTree);
+      setFollowPosTableContent(result.followPosTableContent.map((elem) => {
+        let newDT = new DataFollowListTuple(elem._data);
+        newDT.followList.addAll(elem._followList);
+        return newDT;
+      }));
+      setTransitionsTableProps({
+        transitionsTable: result.transitionsTableContent.map((elem) => {
+          let newTTD = new TransitionsTableData(0, new LinkedList<number>, elem._isEndingState);
+          newTTD.nextStateBySymbolArray.push(...elem._nextStateBySymbolArray);
+          newTTD.arrLeaves.addAll(elem._arrLeaves);
+          return newTTD;
+        }),
+        alphabetList: result.alphabetList
       });
 
-    const result: ResStruct = await response.json();
-
-    setisLoading(false);
-
-    setdotSyntacticTree(result.svgSyntacticTree);
-    setFollowPosTableContent(result.followPosTableContent.map((elem) => {
-      let newDT = new DataFollowListTuple(elem._data);
-      newDT.followList.addAll(elem._followList);
-      return newDT;
-    }));
-    setTransitionsTableProps({
-      transitionsTable: result.transitionsTableContent.map((elem) => {
-        let newTTD = new TransitionsTableData(0, new LinkedList<number>, elem._isEndingState);
-        newTTD.nextStateBySymbolArray.push(...elem._nextStateBySymbolArray);
-        newTTD.arrLeaves.addAll(elem._arrLeaves);
-        return newTTD;
-      }),
-      alphabetList: result.alphabetList
-    });
-
-    setdotDFA(result.svgDFAGraph);
-  }
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
+      setdotDFA(result.svgDFAGraph);
+    }
+    /*
+    seterrors(prevErrors => [...prevErrors, {
+      type: 'fatal',
+      message: localErrors[0].message,j
+    }])
+      */
   };
+
 
   return (
     <main className={styles.all}>
@@ -80,35 +136,30 @@ export default function Home() {
           <div className="card-body">
             <div>
               <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Write epsilon</h6>
-              <p className="card-text">To write epsilon, you can type <b>''</b>, <Latex>{`$\\epsilon$`}</Latex> or <Latex>{`$\\varepsilon$`}</Latex>.</p>
+              <p className="card-text">To write epsilon, you can type <b>""</b>, <b>''</b>, <Latex>{`$\\epsilon$`}</Latex> or <Latex>{`$\\varepsilon$`}</Latex>.</p>
             </div>
-            <div className="my-4">
-              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Valid characters</h6>
-              <ul className="">
-                <li className="">All letters of the english alphabet, whether uppercase or lowercase. i.e. <b>a</b>,<b>B</b>,<b>Z</b>,<b>e</b></li>
-                <li className="">Integer numbers. i.e. <b>1</b>,<b>2</b>,<b>3</b></li>
-                <li className="">
-                  These others: <b>!</b>,
-                  <b> %</b>,
-                  <b> &</b>,
-                  <b> /</b>,
-                  <b> =</b>,
-                  <b> ?</b>,
-                  <b> ¿</b>,
-                  <b> ¡</b>,
-                  <b> -</b>,
-                  <b> _</b>,
-                  <b> .</b>,
-                  <b> ,</b>,
-                  <b> _</b>,
-                  <b> ;</b>,
-                  <b> &lt;</b>,
-                  <b> &gt;</b>
-                </li>
+            <div className="mt-4">
+              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Suported grammars:</h6>
+              <ul>
+                <li><Latex>{"$(a)$"}</Latex></li>
+                <li><Latex>{"$ab$"}</Latex></li>
+                <li><Latex>{"$a|b$"}</Latex></li>
+                <li><Latex>{"$a*$"}</Latex></li>
+                <li><Latex>{"$a+$"}</Latex></li>
+                <li><Latex>{"$a?$"}</Latex></li>
+                <li><Latex>{"$\\varepsilon$"}</Latex> (epsilon character)</li>
               </ul>
-              <p>Of course, if you cannot use a certain character, you can always replace it with a valid one.</p>
             </div>
-            <div>
+            <div className="mt-4">
+              <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Valid examples:</h6>
+              <ul>
+                <li><Latex>{"$ab?c(a|b)+$"}</Latex></li>
+                <li><Latex>{"$(0|1)+$"}</Latex></li>
+                <li><Latex>{"$(d|b|c|a|ε)(d|b)d*$"}</Latex></li>
+                <li><Latex>{"$((0|1)+|(a|b)+)*(iloveyou)?$"}</Latex></li>
+              </ul>
+            </div>
+            <div className="mt-4">
               <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>How this works? And the rules of the method:</h6>
               <p className="mb-1">
                 If you have questions about the rules of this method, please visit this GeeksForGeeks webpage (GeeksForGeeks you are the best :D):
@@ -119,36 +170,56 @@ export default function Home() {
         </div>
 
         <hr />
-        <div>
-          <label className="col-form-label" htmlFor="input-text">Enter the Regular Expresion</label>
-          <input value={inputValue}
-            onChange={handleChange}
-            type="text"
-            className={styles.input_text + " form-control"}
-            placeholder="Default input"
-            id="input-text" />
-        </div>
-        <fieldset className="mt-3 mb-2">
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" value="" id="flexCheck1" />
-            <label className="form-check-label" htmlFor="flexCheck1">
-              Use <Latex>{`$a?$`}</Latex> as <Latex>{`$\\relax(a|\\varepsilon)$`}</Latex>
-            </label>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label className="col-form-label" htmlFor="input-text">Enter the Regular Expresion</label>
+            <input
+              value={formData.inputValue}
+              name="inputValue"
+              onChange={handleChange}
+              type="text"
+              className={styles.input_text + " form-control " + (error.message.length > 0 ? "is-invalid" : "")}
+              placeholder="Example: (a*|b*)*"
+              id="input-text" />
+            {error.message.length > 0 && <div className="invalid-feedback">{error.message}. at character {error.type === "syntax" ? Number(error.line) : Number(error.line) + 1}</div>}
+
           </div>
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" value="" id="flexCheck2" />
-            <label className="form-check-label" htmlFor="flexCheck2">
-              Use <Latex>{`$a+$`}</Latex> as <Latex>{`$aa*$`}</Latex>
-            </label>
-          </div>
-        </fieldset>
-        <button onClick={() => analyzeRegExp()} disabled={isLoading} className='btn btn-primary mt-2'>Generate DFA</button>
+          <fieldset className="mt-3 mb-2">
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                name="checkbox1"
+                type="checkbox"
+                checked={formData.checkbox1}
+                onChange={handleChange}
+                id="flexCheck1"
+              />
+              <label className="form-check-label" htmlFor="flexCheck1">
+                Use <Latex>{`$a?$`}</Latex> as <Latex>{`$\\relax(a|\\varepsilon)$`}</Latex>
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                name="checkbox2"
+                type="checkbox"
+                checked={formData.checkbox2}
+                onChange={handleChange}
+                id="flexCheck2"
+              />
+              <label className="form-check-label" htmlFor="flexCheck2">
+                Use <Latex>{`$a+$`}</Latex> as <Latex>{`$aa*$`}</Latex>
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" disabled={isLoading} className='btn btn-primary mt-2'>Generate DFA</button>
+        </form>
 
         {isLoading ? <div className="d-flex mt-3 justify-content-center">
           <Spinner animation="border" variant="primary" />
         </div> : dotDFA.length > 0 ? <div>
           <hr />
-          <p className="text-muted">Result:</p>
+          <p className="text-muted">Result of <Latex>{`$${finalRegExp}$`}</Latex>:</p>
 
           <div className="mt-3">
             <div>

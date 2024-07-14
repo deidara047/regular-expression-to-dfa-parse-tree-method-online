@@ -25,7 +25,9 @@ let alphabetList: string[] = [];
 function insertInFollowPosTable(keys: LinkedList<number>, elemsForEachKey: LinkedList<number>) {
     for (let i = 0; i < keys.size(); i++) {
         for (let j = 0; j < elemsForEachKey.size(); j++) {
-            followPosTable[keys.get(i) - 1].followList.appendSorted(elemsForEachKey.get(j));
+            if(!followPosTable[keys.get(i) - 1].followList.contains(elemsForEachKey.get(j))) {
+                followPosTable[keys.get(i) - 1].followList.appendSorted(elemsForEachKey.get(j));
+            }
         }
     }
 }
@@ -46,14 +48,14 @@ function insertInAlphabetList(elem: string) {
 %%
 
 \s+                         if (yy.trace) yy.trace(`skipping whitespace ${hexlify(yytext)}`)
-"*"                         return '*'
+"*"|"∗"                     return '*'
 "+"                         return '+'
-"|"                         return '|'
+"|"|"∣"                     return '|'
 "?"                         return '?'
 "("                         return '('
 ")"                         return ')'
-"ε"|"ϵ"|"''"                return 'EPSILON'
-[^?\+\*\(\)\|"'"\"\\\n\r\t] return 'CHAR'
+"ε"|"ϵ"                     return 'EPSILON'
+[^?\+\*\(\)"|""∣""'"\"\\\n\r\t] return 'CHAR'
 <<EOF>>                     return 'EOF'
 .                           return 'INVALID'
 
@@ -218,9 +220,11 @@ factor
     ;
 
 base
-    : EPSILON
+    : '(' expr ')'
+        { $$ = $2; }
+    | EPSILON
         {
-            $$ = new Node($1 == "''" ? 'ε' : $1, true);
+            $$ = new Node($1, true);
         }
     | CHAR
         { 
@@ -230,8 +234,6 @@ base
             followPosTable.push(new DataFollowListTuple($1));
             insertInAlphabetList($1);
         } 
-    | '(' expr ')'
-        { $$ = $2; }
     | INVALID
         { 
           errors.push({

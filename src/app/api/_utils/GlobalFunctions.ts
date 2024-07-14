@@ -8,7 +8,7 @@ export function generateTransitionsTableData(alphabetList: string[], rootNode: N
   let transitionsTable: TransitionsTableData[] = [];
 
   // Insert first data which is firstPosList from rootNode
-  transitionsTable.push(new TransitionsTableData(alphabetList.length, rootNode.firstPosList, false));
+  transitionsTable.push(new TransitionsTableData(alphabetList.length, rootNode.firstPosList, rootNode.firstPosList.contains(rootNode.rightNode!.count)));
 
   let rowTransitionTableCounter: number = 0;
   while (true) {

@@ -1,4 +1,5 @@
-import { TsCalcParser } from "./_analyzer/ts-analyzer";
+import { TsCalcParser as  TsCalcParser1 } from "./_analyzer/ts-analyzer";
+import { TsCalcParser as  TsCalcParser2 } from "./_analyzer/ts-analyzer2";
 import { DataFollowListTuple } from "./_classes/DataFollowListTuple";
 import { SyntacticTree } from "./_classes/SyntacticTree";
 import { Node } from "./_classes/Node";
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
   const errors: ParserError[] = [];
   let result: ParserResult | null = null;
   try {
-    let prsInstance = new TsCalcParser();
+    let prsInstance = new TsCalcParser1();
     result = prsInstance.parse(reqBody.input, errors);
   } catch (e: any) {
     errors.push({
@@ -77,8 +78,6 @@ export async function POST(req: Request) {
   }
 
   const results: [string, string] = await Promise.all([generateSyntacticTreeSvg(), generateDFASvg()]);
-
-  //return { result, errors };
 
   const resJson: ResStruct = { 
     svgSyntacticTree: results[0] ,
