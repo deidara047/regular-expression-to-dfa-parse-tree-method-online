@@ -42,19 +42,19 @@ function insertInAlphabetList(elem: string) {
 
 export class TsCalcParser extends JisonParser implements JisonParserApi {
     $?: any;
-    symbols_: SymbolsType = {"error":2,"expressions":3,"expr":4,"EOF":5,"term":6,"|":7,"factor":8,"base":9,"*":10,"+":11,"?":12,"CHAR":13,"(":14,")":15,"INVALID":16,"$accept":0,"$end":1};
-    terminals_: TerminalsType = {2:"error",5:"EOF",7:"|",10:"*",11:"+",12:"?",13:"CHAR",14:"(",15:")",16:"INVALID"};
-    productions_: ProductionsType = [0,[3,2],[3,2],[4,1],[4,3],[6,1],[6,2],[8,1],[8,2],[8,2],[8,2],[9,1],[9,3],[9,1]];
+    symbols_: SymbolsType = {"error":2,"expressions":3,"expr":4,"EOF":5,"term":6,"|":7,"factor":8,"base":9,"*":10,"+":11,"?":12,"EPSILON":13,"CHAR":14,"(":15,")":16,"INVALID":17,"$accept":0,"$end":1};
+    terminals_: TerminalsType = {2:"error",5:"EOF",7:"|",10:"*",11:"+",12:"?",13:"EPSILON",14:"CHAR",15:"(",16:")",17:"INVALID"};
+    productions_: ProductionsType = [0,[3,2],[3,2],[4,1],[4,3],[6,1],[6,2],[8,1],[8,2],[8,2],[8,2],[9,1],[9,1],[9,3],[9,1]];
     table: Array<StateType>;
-    defaultActions: {[key:number]: any} = {10:[2,1],12:[2,2]};
+    defaultActions: {[key:number]: any} = {11:[2,1],13:[2,2]};
 
     constructor (yy = {}, lexer = new TsCalcLexer(yy)) {
       super(yy, lexer);
 
       // shorten static method to just `o` for terse STATE_TABLE
-      const $V0=[1,7],$V1=[1,8],$V2=[1,9],$V3=[1,11],$V4=[5,7,15],$V5=[5,7,13,14,15,16],$V6=[5,7,10,11,12,13,14,15,16];
+      const $V0=[1,7],$V1=[1,8],$V2=[1,9],$V3=[1,10],$V4=[1,12],$V5=[5,7,16],$V6=[5,7,13,14,15,16,17],$V7=[5,7,10,11,12,13,14,15,16,17];
       const o = JisonParser.expandParseTable;
-      this.table = [{2:[1,3],3:1,4:2,6:4,8:5,9:6,13:$V0,14:$V1,16:$V2},{1:[3]},{5:[1,10],7:$V3},{5:[1,12]},o($V4,[2,3],{9:6,8:13,13:$V0,14:$V1,16:$V2}),o($V5,[2,5]),o($V5,[2,7],{10:[1,14],11:[1,15],12:[1,16]}),o($V6,[2,11]),{4:17,6:4,8:5,9:6,13:$V0,14:$V1,16:$V2},o($V6,[2,13]),{1:[2,1]},{6:18,8:5,9:6,13:$V0,14:$V1,16:$V2},{1:[2,2]},o($V5,[2,6]),o($V5,[2,8]),o($V5,[2,9]),o($V5,[2,10]),{7:$V3,15:[1,19]},o($V4,[2,4],{9:6,8:13,13:$V0,14:$V1,16:$V2}),o($V6,[2,12])];
+      this.table = [{2:[1,3],3:1,4:2,6:4,8:5,9:6,13:$V0,14:$V1,15:$V2,17:$V3},{1:[3]},{5:[1,11],7:$V4},{5:[1,13]},o($V5,[2,3],{9:6,8:14,13:$V0,14:$V1,15:$V2,17:$V3}),o($V6,[2,5]),o($V6,[2,7],{10:[1,15],11:[1,16],12:[1,17]}),o($V7,[2,11]),o($V7,[2,12]),{4:18,6:4,8:5,9:6,13:$V0,14:$V1,15:$V2,17:$V3},o($V7,[2,14]),{1:[2,1]},{6:19,8:5,9:6,13:$V0,14:$V1,15:$V2,17:$V3},{1:[2,2]},o($V6,[2,6]),o($V6,[2,8]),o($V6,[2,9]),o($V6,[2,10]),{7:$V4,16:[1,20]},o($V5,[2,4],{9:6,8:14,13:$V0,14:$V1,15:$V2,17:$V3}),o($V7,[2,13])];
     }
 
     performAction (yytext:string, yyleng:number, yylineno:number, yy:any, yystate:number /* action[1] */, $$:any /* vstack */, _$:any /* lstack */, errors): any {
@@ -203,6 +203,11 @@ case 10:
         
 break;
 case 11:
+
+            this.$ = new Node($$[$0] == "''" ? 'ε' : $$[$0], true);
+        
+break;
+case 12:
  
             this.$ = new Node($$[$0], false, getNodeCounter());
             this.$.firstPosList.append(this.$.count);
@@ -211,10 +216,10 @@ case 11:
             insertInAlphabetList($$[$0]);
         
 break;
-case 12:
+case 13:
  this.$ = $$[$0-1]; 
 break;
-case 13:
+case 14:
  
           errors.push({
             type: 'lexical',
@@ -246,11 +251,12 @@ export class TsCalcLexer extends JisonLexer implements JisonLexerApi {
         /^(?:\?)/,
         /^(?:\()/,
         /^(?:\))/,
-        /^(?:[a-zA-Z0-9])/,
+        /^(?:\u03b5|\u03f5|'')/,
+        /^(?:[^?\+\*\(\)\|"'"\"\\\n\r\t])/,
         /^(?:$)/,
         /^(?:.)/
     ];
-    conditions: any = {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9],"inclusive":true}}
+    conditions: any = {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10],"inclusive":true}}
     performAction (yy:any,yy_:any,$avoiding_name_collisions:any,YY_START:any): any {
           var YYSTATE=YY_START;
         switch($avoiding_name_collisions) {
@@ -260,11 +266,12 @@ export class TsCalcLexer extends JisonLexer implements JisonLexerApi {
     case 2:return 11
     case 3:return 7
     case 4:return 12
-    case 5:return 14
-    case 6:return 15
+    case 5:return 15
+    case 6:return 16
     case 7:return 13
-    case 8:return 5
-    case 9:return 16
+    case 8:return 14
+    case 9:return 5
+    case 10:return 17
         }
     }
 }

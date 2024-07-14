@@ -37,7 +37,7 @@ function insertInAlphabetList(elem: string) {
 }
 
 %}
-
+/* εϵ */
 /* lexical grammar */
 %lex
 %verbose999           // change to 'verbose' to see lexer decisions
@@ -45,16 +45,17 @@ function insertInAlphabetList(elem: string) {
 
 %%
 
-\s+                   if (yy.trace) yy.trace(`skipping whitespace ${hexlify(yytext)}`)
-"*"                   return '*'
-"+"                   return '+'
-"|"                   return '|'
-"?"                   return '?'
-"("                   return '('
-")"                   return ')'
-[a-zA-Z0-9]           return 'CHAR'
-<<EOF>>               return 'EOF'
-.                     return 'INVALID'
+\s+                         if (yy.trace) yy.trace(`skipping whitespace ${hexlify(yytext)}`)
+"*"                         return '*'
+"+"                         return '+'
+"|"                         return '|'
+"?"                         return '?'
+"("                         return '('
+")"                         return ')'
+"ε"|"ϵ"|"''"                return 'EPSILON'
+[^?\+\*\(\)\|"'"\"\\\n\r\t] return 'CHAR'
+<<EOF>>                     return 'EOF'
+.                           return 'INVALID'
 
 /lex
 
@@ -217,14 +218,18 @@ factor
     ;
 
 base
-    : CHAR
+    : EPSILON
+        {
+            $$ = new Node($1 == "''" ? 'ε' : $1, true);
+        }
+    | CHAR
         { 
             $$ = new Node($1, false, getNodeCounter());
             $$.firstPosList.append($$.count);
             $$.lastPosList.append($$.count);
             followPosTable.push(new DataFollowListTuple($1));
             insertInAlphabetList($1);
-        }
+        } 
     | '(' expr ')'
         { $$ = $2; }
     | INVALID

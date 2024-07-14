@@ -23,6 +23,7 @@ config.autoAddCss = false;
 export default function Home() {
   const [isLoading, setisLoading] = useState(false);
   const [inputValue, setInputValue] = useState('ab?c(a|b)+');
+  const [inputValue2, setInputValue2] = useState('');
   const [dotSyntacticTree, setdotSyntacticTree] = useState("");
   const [followPosTableContent, setFollowPosTableContent] = useState<DataFollowListTuple[] | null>(null);
   const [dotDFA, setdotDFA] = useState("");
@@ -71,11 +72,11 @@ export default function Home() {
 
   return (
     <main className={styles.all}>
-      <div className="container my-4 border border-secondary" style={{ padding: "1.8rem 0 1.8rem" }}>
-        <h1 style={{ textShadow: "2px 2px #aaa" }}><b>Regular Expresion to DFA</b></h1>
+      <div className={styles.content + " container border border-secondary"}>
+        <h1 style={{ textShadow: "2px 2px #aaa" }}><b>Regular Expresion to DFA Online</b></h1>
         <h3>Parse tree method</h3>
         <Link target="_blank" className="text-decoration-none" href="https://www.geeksforgeeks.org/regular-expression-to-dfa/"><FontAwesomeIcon icon={faGithub} /> by Deidr047</Link>
-        <div className="card mt-3" style={{backgroundColor: "#eee"}}>
+        <div className="card mt-3" style={{ backgroundColor: "#eee" }}>
           <div className="card-body">
             <div>
               <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Write epsilon</h6>
@@ -100,7 +101,9 @@ export default function Home() {
                   <b> .</b>,
                   <b> ,</b>,
                   <b> _</b>,
-                  <b> ;</b>
+                  <b> ;</b>,
+                  <b> &lt;</b>,
+                  <b> &gt;</b>
                 </li>
               </ul>
               <p>Of course, if you cannot use a certain character, you can always replace it with a valid one.</p>
@@ -141,37 +144,35 @@ export default function Home() {
         </fieldset>
         <button onClick={() => analyzeRegExp()} disabled={isLoading} className='btn btn-primary mt-2'>Generate DFA</button>
 
-        <SSRProvider>
-          {isLoading ? <div className="d-flex justify-content-center">
-            <Spinner animation="border" variant="primary" />
-          </div> : ""}
-        </SSRProvider>
-
-        {dotDFA.length > 0 ? <div>
+        {isLoading ? <div className="d-flex mt-3 justify-content-center">
+          <Spinner animation="border" variant="primary" />
+        </div> : dotDFA.length > 0 ? <div>
           <hr />
           <p className="text-muted">Result:</p>
-        </div> : ""}
-        <div className={dotDFA.length > 0 ? "mt-3" : ""}>
-          {dotDFA.length > 0 ? <div>
-            <h2>Parse Tree Graph</h2>
-          </div> : ""}
 
-          <div className="overflow-hidden" dangerouslySetInnerHTML={{ __html: dotSyntacticTree }}>
-          </div>
-
-          {followPosTableContent != null ? <div className="mt-5"><FollowPosTable followPosTable={followPosTableContent} /></div> : ""}
-
-          {transitionsTableProps != null ? <div className='mt-5'><TransitionsTable
-            transitionsTable={transitionsTableProps.transitionsTable}
-            alphabetList={transitionsTableProps.alphabetList}
-          />  </div> : ""}
-
-          {dotDFA.length > 0 ? <div className="mt-5">
-            <h2>DFA Graph</h2>
-            <div className="overflow-hidden" dangerouslySetInnerHTML={{ __html: dotDFA }}>
+          <div className="mt-3">
+            <div>
+              <h2>Parse Tree Graph</h2>
             </div>
-          </div> : ""}
-        </div>
+
+            <div className="overflow-auto" dangerouslySetInnerHTML={{ __html: dotSyntacticTree }}>
+            </div>
+
+            {followPosTableContent != null ? <div className="mt-5 overflow-auto"><FollowPosTable followPosTable={followPosTableContent} /></div> : ""}
+
+            {transitionsTableProps != null ? <div className='mt-5 overflow-auto'><TransitionsTable
+              transitionsTable={transitionsTableProps.transitionsTable}
+              alphabetList={transitionsTableProps.alphabetList}
+            />  </div> : ""}
+
+            {dotDFA.length > 0 ? <div className="mt-5">
+              <h2>DFA Graph</h2>
+              <p><b>Initial State: </b> S0</p>
+              <div className="overflow-auto" dangerouslySetInnerHTML={{ __html: dotDFA }}>
+              </div>
+            </div> : ""}
+          </div>
+        </div> : ""}
       </div>
     </main>
   );

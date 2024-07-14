@@ -8,3 +8,13 @@
 .input_text {
   max-width: 350px;
 }
+
+.content {
+  padding: 3rem 0 3rem
+}
+
+@media screen and (max-width: 576px) {
+  .content {
+    padding: 2rem 1rem 2rem
+  }
+}

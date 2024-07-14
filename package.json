@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile-jison": "npx ts-jison -t typescript -n TsCalc -n TsCalc -o src/app/api/_analyzer/ts-analyzer.ts src/app/api/_analyzer/analyzer.jison"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
