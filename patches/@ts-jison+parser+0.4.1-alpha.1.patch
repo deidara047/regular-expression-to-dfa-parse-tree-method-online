@@ -1,0 +1,22 @@
+diff --git a/node_modules/@ts-jison/parser/lib/parser.d.ts b/node_modules/@ts-jison/parser/lib/parser.d.ts
+index ed5f65f..f4fc2dc 100644
+--- a/node_modules/@ts-jison/parser/lib/parser.d.ts
++++ b/node_modules/@ts-jison/parser/lib/parser.d.ts
+@@ -5,7 +5,7 @@ export interface StateType {
+ }
+ export interface JisonParserApi {
+     trace: (str?: string) => void;
+-    performAction: (yytext: string, yyleng: number, yylineno: number, yy: any, yystate: any, $$: any, _$: any) => any;
++    performAction: (yytext: string, yyleng: number, yylineno: number, yy: any, yystate: any, $$: any, _$: any, params: any) => any;
+     parseError: ParseErrorType;
+     parse: (input: string) => void;
+ }
+@@ -28,7 +28,7 @@ export declare abstract class JisonParser {
+     abstract defaultActions: {
+         [key: number]: any;
+     };
+-    abstract performAction(yytext: string, yyleng: number, yylineno: number, yy: any, yystate: number, $$: any, _$: any): any;
++    abstract performAction(yytext: string, yyleng: number, yylineno: number, yy: any, yystate: number, $$: any, _$: any, params: any): any;
+     parseError(str: string, hash: ParseErrorHashType): void;
+     parse(input: string, yy?: any): any;
+     static expandParseTable(k: number[], v: number[], o?: StateType): StateType;
