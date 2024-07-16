@@ -130,7 +130,7 @@ export default function Home() {
     <main className={styles.all}>
       
       <div className={styles.content + " container border border-secondary"}>
-        <h1 style={{ textShadow: "2px 2px #aaa" }}><b>Regular Expresion to DFA Online</b></h1>
+        <h1 style={{ textShadow: "0.1rem 0.1rem #aaa" }}><b>Regular Expresion to DFA Online</b></h1>
         <h3>Parse tree method</h3>
         <Link target="_blank" className="text-decoration-none" href="https://www.geeksforgeeks.org/regular-expression-to-dfa/"><FontAwesomeIcon icon={faGithub} /> by Deidr047</Link>
         <div className="card mt-3" style={{ backgroundColor: "#eee" }}>
