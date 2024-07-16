@@ -148,7 +148,7 @@ export function generateSyntacticTreeDot(tree: SyntacticTree): string {
                + "</TD>\n"
                + "                    <TD COLOR=\"#black\" BGCOLOR=\"#f5f5dc\" BORDER=\"1\" STYLE=\"rounded\">  "
                + node.data // DATA
-               + "</TD>\n"
+               + "  </TD>\n"
                + "                    <TD BORDER=\"0\" STYLE=\"rounded\">"
                + "<FONT COLOR=\"#0652DD\">"
                + (node.lastPosList.isEmpty() ? "  " : node.lastPosList.toString()) // LASTPOSLIST
