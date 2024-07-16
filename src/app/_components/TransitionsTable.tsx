@@ -19,7 +19,7 @@ const TransitionsTable: React.FC<Props> = ({ transitionsTable, alphabetList }) =
         <tbody>
           {transitionsTable.map((item, index) => (
             <tr key={index}>
-              <th scope="row" className="text-center">{(item.isEndingState ? "*" : "") + "S" + index} = {"{" + item.arrLeaves.toString() + "}"}</th>
+              <th scope="row">{(item.isEndingState ? "*" : "") + "S" + index} = {"{" + item.arrLeaves.toString() + "}"}</th>
               {item.nextStateBySymbolArray.map((item2, index) => <td className="text-center" key={index}>{item2 != null ? ("S" + item2) : "-"}</td>)}
             </tr>
           ))}
