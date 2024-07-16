@@ -28,8 +28,8 @@ let alphabetList: string[] = [];
 function insertInFollowPosTable(keys: LinkedList<number>, elemsForEachKey: LinkedList<number>) {
     for (let i = 0; i < keys.size(); i++) {
         for (let j = 0; j < elemsForEachKey.size(); j++) {
-            if(!followPosTable[keys.get(i) - 1].followList.contains(elemsForEachKey.get(j))) {
-                followPosTable[keys.get(i) - 1].followList.appendSorted(elemsForEachKey.get(j));
+            if(!followPosTable[keys.get(i)! - 1].followList.contains(elemsForEachKey.get(j)!)) {
+                followPosTable[keys.get(i)! - 1].followList.appendSorted(elemsForEachKey.get(j)!);
             }
         }
     }
@@ -94,7 +94,7 @@ case 1:
 
             // Insert in followPosTable
             insertInFollowPosTable(
-                rootNode.leftNode.lastPosList,
+                rootNode.leftNode!.lastPosList,
                 rootNode.rightNode.firstPosList
             );
 
