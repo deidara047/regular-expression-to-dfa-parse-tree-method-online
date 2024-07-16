@@ -25,7 +25,7 @@ export class TsCalcParser extends JisonParser implements JisonParserApi {
       this.table = [{2:[1,3],3:1,4:2,6:4,8:5,9:6,13:$V0,15:$V1,16:$V2,17:$V3},{1:[3]},{5:[1,11],7:$V4},{5:[1,13]},o($V5,[2,3],{9:6,8:14,13:$V0,15:$V1,16:$V2,17:$V3}),o($V6,[2,5]),o($V6,[2,7],{10:[1,15],11:[1,16],12:[1,17]}),{4:18,6:4,8:5,9:6,13:$V0,15:$V1,16:$V2,17:$V3},o($V7,[2,12]),o($V7,[2,13]),o($V7,[2,14]),{1:[2,1]},{6:19,8:5,9:6,13:$V0,15:$V1,16:$V2,17:$V3},{1:[2,2]},o($V6,[2,6]),o($V6,[2,8]),o($V6,[2,9]),o($V6,[2,10]),{7:$V4,14:[1,20]},o($V5,[2,4],{9:6,8:14,13:$V0,15:$V1,16:$V2,17:$V3}),o($V7,[2,11])];
     }
 
-    performAction (yytext:string, yyleng:number, yylineno:number, yy:any, yystate:number /* action[1] */, $$:any /* vstack */, _$:any /* lstack */, params_obj): any {
+    performAction (yytext:string, yyleng:number, yylineno:number, yy:any, yystate:number /* action[1] */, $$:any /* vstack */, _$:any /* lstack */, params_obj: any): any {
 /* this == yyval */
           var $0 = $$.length - 1;
         switch (yystate) {
