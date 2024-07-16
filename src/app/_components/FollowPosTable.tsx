@@ -21,7 +21,7 @@ const FollowPosTable: React.FC<Props> = ({ followPosTable }) => {
             <tr key={index}>
               <th scope="row" className="text-end">{index + 1}</th>
               <td className="text-center">{item.data}</td>
-              <td className="text-center">{item.followList.toString()}</td>
+              <td>{item.followList.toString()}</td>
             </tr>
           ))}
         </tbody>
