@@ -137,7 +137,7 @@ export default function Home() {
           <div className="card-body">
             <div>
               <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Write epsilon</h6>
-              <p className="card-text">To write epsilon, you can type <b>""</b>, <b>''</b>, <Latex>{`$\\epsilon$`}</Latex> or <Latex>{`$\\varepsilon$`}</Latex> .</p>
+              <p className="card-text">To write epsilon, you can type <b>""</b>, <b>''</b>, <Latex>{`$\\epsilon$`}</Latex> or <Latex>{`$ε$`}</Latex>.</p>
             </div>
             <div className="mt-4">
               <h6 className="fw-bold card-subtitle mb-2" style={{ color: "#0c2461" }}>Suported grammars:</h6>
