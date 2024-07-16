@@ -17,6 +17,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { TsCalcParser } from "./api/_analyzer/ts-analyzer2";
+import Swal from "sweetalert2"
 config.autoAddCss = false;
 
 interface FormData {
@@ -85,37 +86,47 @@ export default function Home() {
       seterror({ type: localErrors[0].type, message: localErrors[0].message, line: localErrors[0].location.first_column })
     } else {
       setisLoading(true);
-      setfinalRegExp(result1);
-      const response = await fetch('https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/api',
-        {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ input: result1 })
+      try {
+        setfinalRegExp(result1);
+        const response = await fetch('https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/api',
+          {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ input: result1 })
+          });
+        
+
+        const result: ResStruct = await response.json();
+        console.log(result)
+
+        setdotSyntacticTree(result.svgSyntacticTree);
+        setFollowPosTableContent(result.followPosTableContent.map((elem) => {
+          let newDT = new DataFollowListTuple(elem._data);
+          newDT.followList.addAll(elem._followList);
+          return newDT;
+        }));
+        setTransitionsTableProps({
+          transitionsTable: result.transitionsTableContent.map((elem) => {
+            let newTTD = new TransitionsTableData(0, new LinkedList<number>, elem._isEndingState);
+            newTTD.nextStateBySymbolArray.push(...elem._nextStateBySymbolArray);
+            newTTD.arrLeaves.addAll(elem._arrLeaves);
+            return newTTD;
+          }),
+          alphabetList: result.alphabetList
         });
 
-      const result: ResStruct = await response.json();
+        setdotDFA(result.svgDFAGraph);
+      } catch (e) {
+        if(e instanceof Error) {
+          console.log(e.message)
+          Swal.fire("ERROR", "ERROR 500: " + e.message, "error")
+        }
+      } finally {
+        setisLoading(false);
+      }
 
-      setisLoading(false);
-
-      setdotSyntacticTree(result.svgSyntacticTree);
-      setFollowPosTableContent(result.followPosTableContent.map((elem) => {
-        let newDT = new DataFollowListTuple(elem._data);
-        newDT.followList.addAll(elem._followList);
-        return newDT;
-      }));
-      setTransitionsTableProps({
-        transitionsTable: result.transitionsTableContent.map((elem) => {
-          let newTTD = new TransitionsTableData(0, new LinkedList<number>, elem._isEndingState);
-          newTTD.nextStateBySymbolArray.push(...elem._nextStateBySymbolArray);
-          newTTD.arrLeaves.addAll(elem._arrLeaves);
-          return newTTD;
-        }),
-        alphabetList: result.alphabetList
-      });
-
-      setdotDFA(result.svgDFAGraph);
     }
     /*
     seterrors(prevErrors => [...prevErrors, {
@@ -128,7 +139,7 @@ export default function Home() {
 
   return (
     <main className={styles.all}>
-      
+
       <div className={styles.content + " container border border-secondary"}>
         <h1 style={{ textShadow: "0.1rem 0.1rem #aaa" }}><b>Regular Expresion to DFA Online</b></h1>
         <h3>Parse tree method</h3>
