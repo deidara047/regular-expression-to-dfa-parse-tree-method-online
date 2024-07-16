@@ -11,17 +11,17 @@ const FollowPosTable: React.FC<Props> = ({ followPosTable }) => {
       <table className="table table-striped w-auto table-bordered" style={{ tableLayout: "auto" }}>
         <thead>
           <tr>
-            <th scope="col">Leaf</th>
-            <th scope="col">Symbol</th>
-            <th scope="col">Follow Pos</th>
+            <th scope="col" className="text-center">Leaf</th>
+            <th scope="col" className="text-center">Symbol</th>
+            <th scope="col" className="text-center">Follow Pos</th>
           </tr>
         </thead>
         <tbody>
           {followPosTable.map((item, index) => (
             <tr key={index}>
-              <th scope="row">{index + 1}</th>
-              <td>{item.data}</td>
-              <td>{item.followList.toString()}</td>
+              <th scope="row" className="text-end">{index + 1}</th>
+              <td className="text-center">{item.data}</td>
+              <td className="text-center">{item.followList.toString()}</td>
             </tr>
           ))}
         </tbody>

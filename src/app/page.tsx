@@ -181,6 +181,7 @@ export default function Home() {
               type="text"
               className={styles.input_text + " form-control " + (error.message.length > 0 ? "is-invalid" : "")}
               placeholder="Example: (a*|b*)*"
+              required={true}
               id="input-text" />
             {error.message.length > 0 && <div className="invalid-feedback">{error.message}. at character {error.type === "syntax" ? Number(error.line) : Number(error.line) + 1}</div>}
 
