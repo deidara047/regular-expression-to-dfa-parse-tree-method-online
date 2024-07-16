@@ -3,7 +3,6 @@ import { TsCalcParser as  TsCalcParser2 } from "./_analyzer/ts-analyzer2";
 import { DataFollowListTuple } from "./_classes/DataFollowListTuple";
 import { SyntacticTree } from "./_classes/SyntacticTree";
 import { Node } from "./_classes/Node";
-import { toStream } from "ts-graphviz/adapter";
 import { generateDFADot, generateSyntacticTreeDot, generateTransitionsTableData } from "./_utils/GlobalFunctions";
 import { TransitionsTableData } from "./_classes/TransitionsTableData";
 import { ResStruct } from "../typestouse";
@@ -55,16 +54,6 @@ export async function POST(req: Request) {
   let transitionsTable: TransitionsTableData[] = generateTransitionsTableData(result!.alphabetList, result!.rootNode, result!.followPosTable);
 
   async function generateSyntacticTreeSvg() {
-    /*
-    const stream = await toStream(generateSyntacticTreeDot(tree), { format: 'svg' });
-    const chunks: Buffer[] = [];
-
-    for await (const chunk of stream) {
-      chunks.push(Buffer.from(chunk));
-    }
-
-    const svgString = Buffer.concat(chunks).toString('utf-8');
-    */
     const viz = await instance();
     
     const dotSource = generateSyntacticTreeDot(tree);
@@ -76,17 +65,6 @@ export async function POST(req: Request) {
   }
 
   async function generateDFASvg() {
-    /*
-    const stream = await toStream(generateDFADot(result!.alphabetList, transitionsTable), { format: 'svg' });
-    const chunks: Buffer[] = [];
-
-    for await (const chunk of stream) {
-      chunks.push(Buffer.from(chunk));
-    }
-
-    const svgString = Buffer.concat(chunks).toString('utf-8');
-    */
-
     const viz = await instance();
     
     const dotSource = generateDFADot(result!.alphabetList, transitionsTable);

@@ -24,8 +24,7 @@
     "react": "^18",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18",
-    "react-latex-next": "^3.0.0",
-    "ts-graphviz": "^2.1.2"
+    "react-latex-next": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
