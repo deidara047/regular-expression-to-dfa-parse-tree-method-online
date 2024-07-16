@@ -128,6 +128,7 @@ export default function Home() {
 
   return (
     <main className={styles.all}>
+      
       <div className={styles.content + " container border border-secondary"}>
         <h1 style={{ textShadow: "2px 2px #aaa" }}><b>Regular Expresion to DFA Online</b></h1>
         <h3>Parse tree method</h3>
