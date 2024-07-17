@@ -4,7 +4,7 @@ import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Regular Expression to DFA Online Parse Tree Method | Deidr047",
-  description: "An app to generate an DFA from an regular expression Online using the Parse Tree Method",
+  description: "An app to generate a DFA from a regular expression online using the Parse Tree Method",
 };
 
 export default function RootLayout({
