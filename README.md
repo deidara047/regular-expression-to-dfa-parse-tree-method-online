@@ -1,4 +1,4 @@
-# Regular Expression to DFA Online Converter 
+# Regular Expression to DFA Online Converter using the Parse Tree Method
 
 🔗 **URL of the app** 👉👉👉 [https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/](https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/) 👈👈👈
 
