@@ -59,5 +59,3 @@ This tool is perfect for:
 
 ## Issue Note
 For now the only thing (that I'm concerned) that this app cannot do, is converting an regular expresion which has only epsilons (like 'ε|ε?'). While it's obvious that the DFA it's just one state and it's also an ending state and it has no transitions, for now I didn't add that option. Maybe will be fixed in the future, but now it should be fine with anything else.
-
-Contribute to this project to help improve understanding of theoretical computer science concepts!
