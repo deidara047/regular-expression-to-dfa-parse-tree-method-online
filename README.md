@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Regular Expression to DFA Online Converter 
 
-## Getting Started
+🔗 **URL of the app** 👉👉👉 [https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/](https://regular-expression-to-dfa-parse-tree-method-online.vercel.app/) 👈👈👈
 
-First, run the development server:
+This web application converts regular expressions to Deterministic Finite Automata (DFA) using the parse tree method. It's a useful tool for students, educators, and professionals working with formal languages and automata theory.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### What is the 'Parse Tree Method'?
+Basically with this method you can convert an regular expression directly to an DFA, without going through the process of first converting to NFA, then to DFA and finally optimizing the automata (in other words, it's an alternative to the Subset Construction method, of course with pros and cons).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If you need more information about what is this method about, you can go to this page from the well-known and reliable GeeksForGeeks: https://www.geeksforgeeks.org/regular-expression-to-dfa/
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Supports various regular expression grammar elements including:
+  - Concatenation (ab)
+  - Alternation (a|b)
+  - Kleene star (a*)
+  - Plus operator (a+)
+  - Optional character (a?)
+  - Epsilon (ε) - can be typed as "", ε, or ∈
+- Provides clear examples of valid regular expressions
+- Offers options to customize the interpretation of certain operators
+- User-friendly interface for entering regular expressions
+- Generates DFA based on the input regular expression
 
-## Learn More
+## How to Use
 
-To learn more about Next.js, take a look at the following resources:
+1. Enter your regular expression in the provided input field (you can copy and paste one of the examples in the information box)
+2. Select any additional options if needed
+3. Click the "Generate DFA" button to view the result
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Generated Output
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+When you click "Generate DFA", the application produces the following items:
 
-## Deploy on Vercel
+1. Parse Tree Graph
+2. Follow Pos Table
+3. Transitions Table
+4. DFA Graph
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+These outputs provide a comprehensive view of the conversion process from regular expression to DFA, making it an excellent educational and analytical tool.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+This tool is perfect for:
+- Computer Science students learning about formal languages
+- Developers working on text processing or pattern matching
+- Anyone interested in exploring the relationship between regular expressions and finite automata
+
+## Issue Note
+For now the only thing (that I'm concerned) that this app cannot do, is converting an regular expresion which has only epsilons (like 'ε|ε?'). While it's obvious that the DFA it's just one state and it's also an ending state and it has no transitions, for now I didn't add that option. Maybe will be fixed in the future, but now it should be fine with anything else.
+
+Contribute to this project to help improve understanding of theoretical computer science concepts!
