@@ -15,7 +15,7 @@ Please note:
 
 We encourage its use in academic settings, for self-study, and for gaining insights into formal language theory. However, for industrial or research applications requiring optimized performance, we recommend seeking out more specialized tools.
 
-### What is the 'Parse Tree Method'?
+## What is the 'Parse Tree Method'?
 Basically with this method you can convert an regular expression directly to an DFA, without going through the process of first converting to NFA, then to DFA and finally optimizing the automata (in other words, it's an alternative to the Subset Construction method, of course with pros and cons).
 
 If you need more information about what is this method about, you can go to this page from the well-known and reliable GeeksForGeeks: https://www.geeksforgeeks.org/regular-expression-to-dfa/
