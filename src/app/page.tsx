@@ -96,7 +96,7 @@ export default function Home() {
             },
             body: JSON.stringify({ input: result1 })
           });
-        
+
 
         const result: ResStruct = await response.json();
         console.log(result)
@@ -119,7 +119,7 @@ export default function Home() {
 
         setdotDFA(result.svgDFAGraph);
       } catch (e) {
-        if(e instanceof Error) {
+        if (e instanceof Error) {
           console.log(e.message)
           Swal.fire("ERROR", "ERROR 500: " + e.message, "error")
         }
@@ -177,6 +177,7 @@ export default function Home() {
                 If you have questions about the rules of this method, please visit this GeeksForGeeks webpage (GeeksForGeeks you are the best :D):
               </p>
               <Link target="_blank" href="https://www.geeksforgeeks.org/regular-expression-to-dfa/">https://www.geeksforgeeks.org/regular-expression-to-dfa/</Link>
+              <p className="mt-2">If you need further information about how this application works, <Link target="_blank" href="https://github.com/deidara047/regular-expression-to-dfa-parse-tree-method-online">go to this site.</Link></p>
             </div>
           </div>
         </div>

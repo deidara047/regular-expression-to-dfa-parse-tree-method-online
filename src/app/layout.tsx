@@ -17,7 +17,7 @@ export default function RootLayout({
       <Head>
         <meta name="robots" content="all" />
       </Head>
-      <body  style={{backgroundColor: "#e9e9e9"}}>{children}</body>
+      <body style={{backgroundColor: "#e9e9e9"}}>{children}</body>
     </html>
   );
 }

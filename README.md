@@ -4,6 +4,17 @@
 
 This web application converts regular expressions to Deterministic Finite Automata (DFA) using the parse tree method. It's a useful tool for students, educators, and professionals working with formal languages and automata theory.
 
+## Disclaimer
+
+This application is primarily designed for educational purposes. It is intended to serve as a learning tool for students, educators, and those interested in understanding the process of converting regular expressions to DFAs.
+
+Please note:
+- This tool is not optimized for large-scale or production use.
+- It may not be suitable for complex, real-world applications that require high-performance processing.
+- The primary focus is on demonstrating the conversion process clearly, rather than on computational efficiency.
+
+We encourage its use in academic settings, for self-study, and for gaining insights into formal language theory. However, for industrial or research applications requiring optimized performance, we recommend seeking out more specialized tools.
+
 ### What is the 'Parse Tree Method'?
 Basically with this method you can convert an regular expression directly to an DFA, without going through the process of first converting to NFA, then to DFA and finally optimizing the automata (in other words, it's an alternative to the Subset Construction method, of course with pros and cons).
 
